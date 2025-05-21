@@ -1,0 +1,289 @@
+type: collection.insomnia.rest/5.0
+name: Adriano Cobuccio
+meta:
+  id: wrk_68ccdf30d1bd49dcab63b65873a7c569
+  created: 1747836481190
+  modified: 1747838401609
+collection:
+  - url: "{{base_url}}/auth"
+    name: AUTH
+    meta:
+      id: req_64d3adac9bc141e291824d5047736122
+      created: 1747836481363
+      modified: 1747850235709
+      isPrivate: false
+      sortKey: -1747842411382
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "email": "evandrojlle@gmail.com",
+            "password": "Abc@123456"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.1.0
+        id: pair_847fe8f910394d5e8592260265b5b312
+      - id: pair_c744a3aa33a144ea8f5914e34536bb1e
+        name: Accept
+        value: application/json
+        disabled: false
+    scripts:
+      afterResponse: |
+        try {
+            responseJSON = JSON.parse(insomnia.response.text());
+
+            insomnia.environment.set("access_token", responseJSON.token);
+        } catch (e) {
+
+        }
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{base_url}}/user/store"
+    name: USER REGISTER
+    meta:
+      id: req_17f5d487ed0f4182b55ec68547757a3f
+      created: 1747842411282
+      modified: 1747849293899
+      isPrivate: false
+      sortKey: -1747842411282
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "Pedro Bó",
+        	"email": "pedrobo@gmail.com",
+        	"password": "Abc@123456",
+        	"password_confirmation": "Abc@123456"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: "{{accept}}"
+        id: pair_c5e69c4b1bef490da18415a009e1dc2f
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{base_url}}/user/update"
+    name: USER EDIT
+    meta:
+      id: req_c5e38bd8e9fa43e39698491f48610b60
+      created: 1747843588671
+      modified: 1747851527030
+      isPrivate: false
+      sortKey: -1747839446322.5
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"user_id":11,
+        	"name": "Evandro de Oliveira",
+        	"email": "evandrojlle@gmail.com"
+        }
+    headers:
+      - name: Content-Type
+        value: "{{content_type}}"
+        id: pair_d80b0825b3074680bf0bbd114b5d8fbb
+      - name: Accept
+        value: "{{accept}}"
+        id: pair_c5e69c4b1bef490da18415a009e1dc2f
+      - id: pair_76125ba59faa4598a225de90e017856b
+        name: Authorization
+        value: "{{access_token}}"
+        disabled: false
+    authentication:
+      type: none
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{base_url}}/user/11"
+    name: USER BY ID
+    meta:
+      id: req_fbbecaff7b3146259d09d6e07d8b86c5
+      created: 1747850246861
+      modified: 1747853145628
+      isPrivate: false
+      sortKey: -1747839446222.5
+    method: GET
+    headers:
+      - name: Content-Type
+        value: "{{content_type}}"
+      - name: Accept
+        value: "{{accept}}"
+      - name: Authorization
+        value: "{{access_token}}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{base_url}}/user/filters"
+    name: USERS BY FILTERS
+    meta:
+      id: req_8e27a5fe0a104bb387a2607d030c8766
+      created: 1747851232349
+      modified: 1747853255894
+      isPrivate: false
+      description: >-
+        ```
+
+        /user/filters/{value?}
+
+        ```
+
+        onde o parâmetro **value** é opcional;
+
+        Exemplo:
+
+        ```
+
+        /user/filters
+
+        ```
+
+
+        **value** deve ser enviado no formato campo=valor.
+
+        Exemplo:
+
+        ```
+
+        /user/filters/name=Mir
+
+        ```
+
+
+        no caso da necessidade de envio de mais de um campo para o filtro,
+        separar pelo caractere &
+
+        Exemplo:
+
+        ```
+
+        /user/filters/name=Mir&email=gmail
+
+        ```
+
+
+        Se a busca for por nome ou email, o filtro será por LIKE
+      sortKey: -1747839446172.5
+    method: GET
+    headers:
+      - name: Content-Type
+        value: "{{content_type}}"
+      - name: Accept
+        value: "{{accept}}"
+      - name: Authorization
+        value: "{{access_token}}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{base_url}}/wallet/self"
+    name: WALLET SELF DEPOSITE
+    meta:
+      id: req_f1813ab5714f45968a2c79269ee45440
+      created: 1747859963082
+      modified: 1747860554101
+      isPrivate: false
+      sortKey: -1747839446072.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"owner_id": 11,
+        	"amount": 100.99
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: "{{accept}}"
+        id: pair_c5e69c4b1bef490da18415a009e1dc2f
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_d18c2685c54e7ab2562575fecf31fa050d9fa0c3
+    created: 1747836481202
+    modified: 1747844154465
+  cookies:
+    - id: 023787ab-16f7-4fb6-bfd0-362dcd824705
+      key: XSRF-TOKEN
+      value: eyJpdiI6ImxPQkFMWFY3RmgwVEtYRWY1WWdvSUE9PSIsInZhbHVlIjoiOUM3UUdhN1hGQkU1dUM4RDRxbnlGVE5wb2h0YjY4a2RxWlU5QlZ5cTZkR3l6eE9kTjJScllydmhId1l2bHBPcGFBOU5PYVRNU3JDSmtwbEtvQjl1SUM5Sk14ZWI5Qm5iZWFpM3loWGRzQXRSblJORzdOWStVb09VT256UE9qcFYiLCJtYWMiOiIwZjdjZmYzOWRhNGFiMzQxY2Y5YjlmYmMxYmE5NTJmNzNkZjViYWMwMTgzZWFmZWE3ZDkxMDBmMzE4ZjQ4NWJmIiwidGFnIjoiIn0%3D
+      domain: 127.0.0.1
+      path: /
+      secure: false
+      httpOnly: false
+      creation: 2025-05-21T14:08:38.054Z
+      hostOnly: true
+      lastAccessed: 2025-05-21T14:10:44.388Z
+    - id: 5b78d895-aefa-4942-aab9-ab7e8b72167b
+      key: api_siga_session
+      value: eyJpdiI6IjR4S3pBWHhLaTBrZC9RSzNTMEtDUXc9PSIsInZhbHVlIjoiNWVnS2FidU9TKzdnbVRJcml4bXhyeHRsdkIwZzNZTjhPYS83bWRLTmNmM2NVTkpzYXBJcjJhZmorM3lKSk9TYWZpcjR6Ylh6dFNHbDdvanFSVEZYZllncklsRGE2QnYwNXNKVGNUZWlxZ1E2eitnNUFEczhXM1NOdW4yWlFXUEUiLCJtYWMiOiIwMGM3NjRkNTFhYzk3ZDAzN2M1MmE0NmUzYjU1YzJjM2UzYzczZGQzODdlZDVmYWU4MTc5ODkyZTY1MWMxZmNiIiwidGFnIjoiIn0%3D
+      domain: 127.0.0.1
+      path: /
+      secure: false
+      httpOnly: true
+      creation: 2025-05-21T14:08:38.056Z
+      hostOnly: true
+      lastAccessed: 2025-05-21T14:10:44.388Z
+environments:
+  name: Base Environment
+  meta:
+    id: env_d18c2685c54e7ab2562575fecf31fa050d9fa0c3
+    created: 1747836481196
+    modified: 1747844154478
+    isPrivate: false
+  data:
+    base_url: http://127.0.0.1:8000/api
+  subEnvironments:
+    - name: ADRCOBUCCIO
+      meta:
+        id: env_f01c39b881c24888ba2e0a43d5e8526a
+        created: 1747840515167
+        modified: 1747844154471
+        isPrivate: true
+        sortKey: 1747840515167
+      data:
+        base_url: http://127.0.0.1:8000/api
+        accept: application/json
+        content_type: application/json
+        access_token: 5|SNZVYSTn9DuBlkjWp5L8G32iP1JptEdQFrNz9koK02a23492

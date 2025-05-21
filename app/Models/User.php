@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -42,6 +44,22 @@ class User extends Model
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get wallet relationship
+     */
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class, 'owner_id', 'id');
+    }
+
+    /**
+     * Get transfers relationship
+     */
+    public function transfers(): HasMany
+    {
+        return $this->hasMany(BankStatement::class, 'transfer_id', 'id');
+    }
 
     /**
      * Get user by email

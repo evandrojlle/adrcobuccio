@@ -21,7 +21,7 @@ class UsersController extends Controller
     public function get(int $id)
     {
         try {
-            $user = User::filters(['id' => $id])->first();
+            $user = User::filters(['id' => $id])->with('wallet', 'transfers')->first();
             if (! $user) {
                 return response()->json([
                     'success' => false,
@@ -64,7 +64,7 @@ class UsersController extends Controller
                 }
             }
             
-            $users = User::filters($filters, ['name', 'email'])->get();
+            $users = User::filters($filters, ['name', 'email'])->with('wallet', 'transfers')->get();
             if ($users->count() === 0) {
                 return response()->json([
                     'success' => false,

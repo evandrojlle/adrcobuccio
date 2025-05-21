@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\TasksController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('auth', [AuthController::class, 'auth']);
+Route::post('/user/store', [UsersController::class, 'store']);
 Route::middleware('auth:api')->group(function() {
-    //...
+    //..
 });
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\WalletsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,9 @@ Route::prefix('user')->group(function () {
     Route::put('update', [UsersController::class, 'update']);
     Route::get('{id}', [UsersController::class, 'get'])->where('id', '[0-9]+');
     Route::get('filters/{value?}', [UsersController::class, 'filters'])->where('value', '.*');
+});
+
+
+Route::prefix('wallet')->group(function () {
+    Route::post('self', [WalletsController::class, 'selfDeposite']);
 });

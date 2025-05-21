@@ -55,4 +55,57 @@ class UsersController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Update User
+     *
+     * @param UserRequest $request - Request form data
+     * @return JsonResponse
+     */
+    public function update(UserRequest $request): JsonResponse
+    {
+        try {
+            $validated = $request->validated();
+            $id = $validated['user_id'];
+            $user = User::getById($id);
+            if (! $user) {
+                return response()->json([
+                    'message' => __('User not found.'),
+                    'data' => []
+                ], 403);
+            }
+
+            $user->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+            foreach ($validated as $key => $value) {
+                if ($key !== 'user_id') {
+                    $user->$key = $value;
+                }
+            }
+
+            if (! $user->save()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('An error occurred while saving the user.'),
+                    'data' => []
+                ], 400);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => __('User updated successfully.'),
+                'data' => [
+                    'id' => $id,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::save('error', $e);
+
+            return response()->json([
+                'success' => false,
+                'message' => __('Ops! An error occurred while performing this action.'),
+                'data' => [],
+            ], 500);
+        }
+    }
 }

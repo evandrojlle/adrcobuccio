@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -34,6 +35,10 @@ class UserRequest extends FormRequest
         $id = $this->request->get('user_id');
 
         return [
+            'user_id' => [
+                ($this->isMethod('put') ? 'required' : 'nullable'),
+                'integer'
+            ],
             'name' => [
                 'required',
                 'string',
@@ -48,7 +53,8 @@ class UserRequest extends FormRequest
                 'unique:App\Models\User,email,' . $id . ',id'
             ],
             'password' => [
-                'required',
+                ($this->isMethod('post') ? 'required' : Rule::requiredIf (fn () => $this->request->get('password'))),
+                'confirmed',
                 'string',
                 'min:' . self::MIN_PASSWORD,
                 'max:' . self::MAX_PASSWORD,
@@ -60,6 +66,8 @@ class UserRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'user_id.required' => __('The user id field is required.'),
+
             'name.required' => __('The name field is required.'),
             'name.min' => __('The name must be at least :min characters.', ['min' => self::MIN_NAME]),
             'name.max' => __('The name may not be greater than :max characters.', ['max' => self::MAX_NAME]),
@@ -74,6 +82,7 @@ class UserRequest extends FormRequest
             'password.min' => __('The password must be at least :min characters.', ['min' => self::MIN_PASSWORD]),
             'password.max' => __('The name may not be greater than :max characters.', ['min' => self::MAX_PASSWORD]),
             'password.regex' => __('Password format is invalid. Must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.'),
+            'password.confirmed' => __('The password confirmation does not match.'),
         ];
     }
 }

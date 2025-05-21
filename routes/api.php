@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('auth', [AuthController::class, 'auth']);
-Route::post('/user/store', [UsersController::class, 'store']);
-Route::put('/user/update', [UsersController::class, 'update']);
-Route::middleware('auth:api')->group(function() {
-    //..
-});
 
+Route::post('/user/store', [UsersController::class, 'store']);
+Route::prefix('user')->group(function () {
+    Route::put('update', [UsersController::class, 'update']);
+    Route::get('id/{id}', [UsersController::class, 'get']);
+});

@@ -13,6 +13,40 @@ class UsersController extends Controller
     use Log;
 
     /**
+     * Get User by id
+     *
+     * @param int $id - user id
+     * @return JsonResponse
+     */
+    public function get(int $id)
+    {
+        try {
+            $user = User::filters(['id' => $id])->first();
+            if (! $user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('User not found.'),
+                    'data' => []
+                ], 403);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => __('Show item found.'),
+                'data' => $user,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::save('error', $e);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'error',
+                'error' => __('Ops! An error occurred while performing this action.')
+            ], 500);
+        }
+    }
+
+    /**
      * Register User
      *
      * @param UserRequest $request - Request form data

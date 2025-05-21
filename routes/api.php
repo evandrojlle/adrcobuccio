@@ -23,4 +23,5 @@ Route::post('/user/store', [UsersController::class, 'store']);
 Route::prefix('user')->group(function () {
     Route::put('update', [UsersController::class, 'update']);
     Route::get('id/{id}', [UsersController::class, 'get']);
+    Route::get('filters/{value?}', [UsersController::class, 'filters'])->where('value', '.*');
 });

@@ -47,6 +47,49 @@ class UsersController extends Controller
     }
 
     /**
+     * Get Users by filters
+     *
+     * @return JsonResponse
+     */
+    public function filters()
+    {
+        try {
+            $filters = [];
+            if (func_num_args() > 0) {
+                $args = func_get_arg(0);
+                $arrArgs = explode('&', $args);
+                foreach ($arrArgs as $arg) {
+                    $explode = explode('=', $arg);
+                    $filters[reset($explode)] = end($explode);
+                }
+            }
+            
+            $users = User::filters($filters, ['name', 'email'])->get();
+            if ($users->count() === 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Users not found.'),
+                    'data' => []
+                ], 403);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => __('Show items found.'),
+                'data' => $users,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::save('error', $e);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'error',
+                'error' => __('Ops! An error occurred while performing this action.')
+            ], 500);
+        }
+    }
+
+    /**
      * Register User
      *
      * @param UserRequest $request - Request form data

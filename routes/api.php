@@ -30,4 +30,5 @@ Route::prefix('user')->group(function () {
 
 Route::prefix('wallet')->group(function () {
     Route::post('self', [WalletsController::class, 'selfCredit']);
+    Route::post('outer', [WalletsController::class, 'outerCredit']);
 });

@@ -27,7 +27,6 @@ class WalletRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->request->get('wallet_id');
         return [
             'wallet_id' => [
                 ($this->isMethod('put') ? 'required' : 'nullable'),
@@ -37,9 +36,13 @@ class WalletRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'user_id' => [
+                ($this->route()->getActionMethod() === 'outerCredit' ? 'required' : 'nullable'),
+                'integer',
+            ],
             'amount_transaction' => [
                 'required',
-                'decimal:2'
+                'decimal:0,2'
             ],
         ];
     }
@@ -49,6 +52,7 @@ class WalletRequest extends FormRequest
         return [
             'wallet_id.required' => __('The wallet id field is required.'),
             'owner_id.required' => __('The owner id field is required.'),
+            'user_id.required' => __('The user id field is required.'),
             'amount_transaction' => __('The amount transaction field is required.'),
             'amount_transaction.decimal' => __('The amount transaction must have up to 8 digits with 2 decimals (10 digits).'),
         ];

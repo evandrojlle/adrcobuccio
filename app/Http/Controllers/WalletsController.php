@@ -93,12 +93,13 @@ class WalletsController extends Controller
                 ], 400);
             }
 
+            // Data for debit transaction.
             $dataDebit = [
                 'owner_id' => $validated['user_id'],
                 'amount_transaction' => $validated['amount_transaction'],
             ];
 
-            $debitWalletTransaction = $this->debitTransaction($dataDebit); // Save transaction into wallet.
+            $debitWalletTransaction = $this->debitTransaction($dataDebit); // Save debit transaction from source wallet.
             if (! isset($debitWalletTransaction->success)) { // if failed to save wallet transaction, return error response.
                 return response()->json([
                     'success' => false,
@@ -120,11 +121,12 @@ class WalletsController extends Controller
                 ], 400);
             }
 
+            // Data for credit transaction.
             $dataCredit = [
                 'owner_id' => $validated['owner_id'],
                 'amount_transaction' => $validated['amount_transaction'],
             ];
-            $creditWalletTransaction = $this->creditTransaction($dataCredit); // Save transaction into wallet.
+            $creditWalletTransaction = $this->creditTransaction($dataCredit); // Save credit transaction into wallet.
             if (! $creditWalletTransaction->id) { // if failed to save wallet transaction, return error response.
                 return response()->json([
                     'success' => false,
@@ -154,6 +156,110 @@ class WalletsController extends Controller
                     'id' => $creditWalletTransaction['id'],
                     'amount_transaction' => $validated['amount_transaction'],
                     'amount' => $creditWalletTransaction['amount']
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            Log::save('error', $e); // Save error log.
+
+            return response()->json([
+                'success' => false,
+                'message' => __('Ops! An error occurred while performing this action.'),
+                'data' => [],
+            ], 500);
+        }
+    }
+
+    /**
+     * Transfer from my wallet into outer waller user.
+     *
+     * @param WalletRequest $request - Request form data
+     * @return JsonResponse
+     */
+    public function transfer(WalletRequest $request): JsonResponse
+    {
+        try {
+            $validated = $request->validated(); // Validate request data.
+            $ownerId = $validated['owner_id'];
+            $myWallet = Wallet::firstByFilters(['owner_id' => $ownerId]);
+            if (! $myWallet) { // if wallet not found, return error response.
+                return response()->json([
+                    'success' => false,
+                    'message' => __('The wallet not found.'),
+                    'data' => []
+                ], 400);
+            }
+
+            if ($myWallet->amount < $validated['amount_transaction']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('The transaction amount is greater than the my wallet amount.'),
+                    'data' => []
+                ], 400);
+            }
+
+            // Data for credit transaction.
+            $dataCredit = [
+                'owner_id' => $validated['user_id'],
+                'amount_transaction' => $validated['amount_transaction'],
+            ];
+            $outerCredit = $this->creditTransaction($dataCredit); // Save transaction into wallet.
+            if (! $outerCredit->id) { // if failed to save wallet transaction, return error response.
+                return response()->json([
+                    'success' => false,
+                    'message' => __('An error occurred while credit amount into wallet.'),
+                    'data' => []
+                ], 400);
+            }
+
+            // Transform wallet data to array and add transaction type and amount transaction.
+            $outerWalletTransaction = $outerCredit->toArray();
+            $outerWalletTransaction['type_transaction'] = 'CREDIT';
+            $outerWalletTransaction['amount_transaction'] = $validated['amount_transaction'];
+            $bankStatement = $this->bankStatement($outerWalletTransaction); // Save statement into bank statement.
+            if (! $bankStatement->id) { // if failed to save bank statement, return error response.
+                return response()->json([
+                    'success' => false,
+                    'message' => __('An error occurred while saving the credit transaction data.'),
+                    'data' => []
+                ], 400);
+            }
+
+            // Data for debit my wallet.
+            $dataDebit = [
+                'owner_id' => $ownerId,
+                'amount_transaction' => $validated['amount_transaction'],
+            ];
+
+            $debitWalletTransaction = $this->debitTransaction($dataDebit); // Save debit transaction from my wallet.
+            if (! isset($debitWalletTransaction->success)) { // if failed to save wallet transaction, return error response.
+                return response()->json([
+                    'success' => false,
+                    'message' => __('An error occurred while debit amount from my wallet.'),
+                    'data' => []
+                ], 400);
+            }
+
+            // Transform wallet data to array and add transaction type and amount transaction.
+            $debitWalletTransaction = $debitWalletTransaction->toArray();
+            $debitWalletTransaction['type_transaction'] = 'DEBIT';
+            $debitWalletTransaction['amount_transaction'] = $dataDebit['amount_transaction'];
+            $bankStatement = $this->bankStatement($debitWalletTransaction); // Save statement into bank statement.
+            if (! $bankStatement->id) { // if failed to save bank statement, return error response.
+                return response()->json([
+                    'success' => false,
+                    'message' => __('An error occurred while transfering the amount.'),
+                    'data' => []
+                ], 400);
+            }
+
+            // return success response with wallet data.
+            return response()->json([
+                'success' => true,
+                'message' => __('Transfer successfully.'),
+                'data' => [
+                    'id' => $debitWalletTransaction['id'],
+                    'amount_transaction' => $validated['amount_transaction'],
+                    'amount' => $debitWalletTransaction['amount']
                 ]
             ], 200);
         } catch (\Exception $e) {

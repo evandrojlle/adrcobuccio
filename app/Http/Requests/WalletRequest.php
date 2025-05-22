@@ -27,6 +27,7 @@ class WalletRequest extends FormRequest
      */
     public function rules(): array
     {
+        $action = $this->route()->getActionMethod();
         return [
             'wallet_id' => [
                 ($this->isMethod('put') ? 'required' : 'nullable'),
@@ -37,7 +38,7 @@ class WalletRequest extends FormRequest
                 'integer',
             ],
             'user_id' => [
-                ($this->route()->getActionMethod() === 'outerCredit' ? 'required' : 'nullable'),
+                (($action === 'outerCredit' || $action === 'transfer') ? 'required' : 'nullable'),
                 'integer',
             ],
             'amount_transaction' => [

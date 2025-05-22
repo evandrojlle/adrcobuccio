@@ -16,7 +16,7 @@ class WalletsController extends Controller
     use Log;
 
     /**
-     * Self Credit to wallet
+     * Deposit amount into self wallet
      *
      * @param WalletRequest $request - Request form data
      * @return JsonResponse
@@ -77,14 +77,14 @@ class WalletsController extends Controller
      * @param WalletRequest $request - Request form data
      * @return JsonResponse
      */
-    public function outerCredit(WalletRequest $request): JsonResponse
+    public function otherCredit(WalletRequest $request): JsonResponse
     {
         try {
             $me = Auth::user(); // Get authenticated user.
             $validated = $request->validated(); // Validate request data.
             $validated['owner_id'] = $me->id; // Set owner id to authenticated user id.
-            $outerWallet = Wallet::firstByFilters(['owner_id' => $validated['user_id']]);
-            if (! $outerWallet) { // if wallet not found, return error response.
+            $otherWallet = Wallet::firstByFilters(['owner_id' => $validated['user_id']]);
+            if (! $otherWallet) { // if wallet not found, return error response.
                 return response()->json([
                     'success' => false,
                     'message' => __('The wallet not found.'),
@@ -92,7 +92,7 @@ class WalletsController extends Controller
                 ], 400);
             }
 
-            if ($outerWallet->amount < $validated['amount_transaction']) {
+            if ($otherWallet->amount < $validated['amount_transaction']) {
                 return response()->json([
                     'success' => false,
                     'message' => __('The transaction amount is greater than the source wallet amount.'),
@@ -105,7 +105,6 @@ class WalletsController extends Controller
                 'owner_id' => $validated['user_id'],
                 'amount_transaction' => $validated['amount_transaction'],
             ];
-
             $debitWalletTransaction = $this->debitTransaction($dataDebit); // Save debit transaction from source wallet.
             if (! isset($debitWalletTransaction->success)) { // if failed to save wallet transaction, return error response.
                 return response()->json([
@@ -161,8 +160,8 @@ class WalletsController extends Controller
                 'message' => __('Credit received successfully.'),
                 'data' => [
                     'id' => $creditWalletTransaction['id'],
-                    'owner' => $me->name,
-                    'source' => User::find($outerWallet->owner_id)->name,
+                    'from' => User::find($otherWallet->owner_id)->name,
+                    'to' => $me->name,
                     'amount_transaction' => $validated['amount_transaction'],
                     'amount' => $creditWalletTransaction['amount']
                 ]
@@ -179,7 +178,7 @@ class WalletsController extends Controller
     }
 
     /**
-     * Transfer from my wallet into outer waller user.
+     * Transfer amount from my wallet to other wallet user.
      *
      * @param WalletRequest $request - Request form data
      * @return JsonResponse
@@ -212,8 +211,8 @@ class WalletsController extends Controller
                 'owner_id' => $validated['user_id'],
                 'amount_transaction' => $validated['amount_transaction'],
             ];
-            $outerCredit = $this->creditTransaction($dataCredit); // Save transaction into wallet.
-            if (! $outerCredit->id) { // if failed to save wallet transaction, return error response.
+            $otherCredit = $this->creditTransaction($dataCredit); // Save transaction into wallet.
+            if (! $otherCredit->id) { // if failed to save wallet transaction, return error response.
                 return response()->json([
                     'success' => false,
                     'message' => __('An error occurred while credit amount into wallet.'),
@@ -222,10 +221,10 @@ class WalletsController extends Controller
             }
 
             // Transform wallet data to array and add transaction type and amount transaction.
-            $outerWalletTransaction = $outerCredit->toArray();
-            $outerWalletTransaction['type_transaction'] = 'CREDIT';
-            $outerWalletTransaction['amount_transaction'] = $validated['amount_transaction'];
-            $bankStatement = $this->bankStatement($outerWalletTransaction); // Save statement into bank statement.
+            $otherWalletTransaction = $otherCredit->toArray();
+            $otherWalletTransaction['type_transaction'] = 'CREDIT';
+            $otherWalletTransaction['amount_transaction'] = $validated['amount_transaction'];
+            $bankStatement = $this->bankStatement($otherWalletTransaction); // Save statement into bank statement.
             if (! $bankStatement->id) { // if failed to save bank statement, return error response.
                 return response()->json([
                     'success' => false,
@@ -239,7 +238,6 @@ class WalletsController extends Controller
                 'owner_id' => $validated['owner_id'],
                 'amount_transaction' => $validated['amount_transaction'],
             ];
-
             $debitWalletTransaction = $this->debitTransaction($dataDebit); // Save debit transaction from my wallet.
             if (! isset($debitWalletTransaction->success)) { // if failed to save wallet transaction, return error response.
                 return response()->json([
@@ -267,11 +265,11 @@ class WalletsController extends Controller
                 'success' => true,
                 'message' => __('Transfer successfully.'),
                 'data' => [
-                    'id' => $outerWalletTransaction['id'],
-                    'owner' => User::find($validated['user_id'])->name,
-                    'source' => $me->name,
+                    'id' => $otherWalletTransaction['id'],
+                    'from' => $me->name,
+                    'to' => User::find($validated['user_id'])->name,
                     'amount_transaction' => $validated['amount_transaction'],
-                    'amount' => $outerWalletTransaction['amount']
+                    'amount' => round($otherWalletTransaction['amount'], 2)
                 ]
             ], 200);
         } catch (\Exception $e) {
@@ -326,7 +324,7 @@ class WalletsController extends Controller
         // Save statement into bank statement.
         $bankStatement = new BankStatement();
         $bankStatement->wallet_id = $wallet['id'];
-        $bankStatement->transfer_id = $wallet['owner_id'];
+        $bankStatement->transfer_id = Auth::user()->id;
         $bankStatement->type_transaction = $wallet['type_transaction'];
         $bankStatement->amount_transaction = $wallet['amount_transaction'];
         $bankStatement->created_at = Carbon::now()->format('Y-m-d H:i:s');

@@ -29,7 +29,7 @@ Route::middleware('auth:api')->group(function() {
 
     Route::prefix('wallet')->group(function () {
         Route::post('self', [WalletsController::class, 'selfCredit']);
-        Route::post('outer', [WalletsController::class, 'outerCredit']);
+        Route::post('other', [WalletsController::class, 'otherCredit']);
         Route::post('transfer', [WalletsController::class, 'transfer']);
     });
 });

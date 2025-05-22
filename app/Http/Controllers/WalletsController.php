@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\WalletRequest;
 use App\Models\BankStatement;
+use App\Models\User;
 use App\Models\Wallet;
 use App\Traits\Log;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class WalletsController extends Controller
 {
@@ -22,7 +24,9 @@ class WalletsController extends Controller
     public function selfCredit(WalletRequest $request): JsonResponse
     {
         try {
+            $me = Auth::user(); // Get authenticated user.
             $validated = $request->validated(); // Validate request data.
+            $validated['owner_id'] = $me->id; // Set owner id to authenticated user id.
             $wallet = $this->creditTransaction($validated); // Save transaction into wallet.
             if (! $wallet->id) { // if failed to save wallet transaction, return error response.
                 return response()->json([
@@ -51,6 +55,7 @@ class WalletsController extends Controller
                 'message' => __('Money deposite successfully.'),
                 'data' => [
                     'id' => $wallet->id,
+                    'owner' => $me->name,
                     'amount_transaction' => $validated['amount_transaction'],
                     'amount' => $wallet->amount
                 ]
@@ -75,7 +80,9 @@ class WalletsController extends Controller
     public function outerCredit(WalletRequest $request): JsonResponse
     {
         try {
+            $me = Auth::user(); // Get authenticated user.
             $validated = $request->validated(); // Validate request data.
+            $validated['owner_id'] = $me->id; // Set owner id to authenticated user id.
             $outerWallet = Wallet::firstByFilters(['owner_id' => $validated['user_id']]);
             if (! $outerWallet) { // if wallet not found, return error response.
                 return response()->json([
@@ -151,9 +158,11 @@ class WalletsController extends Controller
             // return success response with wallet data.
             return response()->json([
                 'success' => true,
-                'message' => __('Money deposite successfully.'),
+                'message' => __('Credit received successfully.'),
                 'data' => [
                     'id' => $creditWalletTransaction['id'],
+                    'owner' => $me->name,
+                    'source' => User::find($outerWallet->owner_id)->name,
                     'amount_transaction' => $validated['amount_transaction'],
                     'amount' => $creditWalletTransaction['amount']
                 ]
@@ -178,9 +187,10 @@ class WalletsController extends Controller
     public function transfer(WalletRequest $request): JsonResponse
     {
         try {
+            $me = Auth::user(); // Get authenticated user.
             $validated = $request->validated(); // Validate request data.
-            $ownerId = $validated['owner_id'];
-            $myWallet = Wallet::firstByFilters(['owner_id' => $ownerId]);
+            $validated['owner_id'] = $me->id; // Set owner id to authenticated user id.
+            $myWallet = Wallet::firstByFilters(['owner_id' => $validated['owner_id']]);
             if (! $myWallet) { // if wallet not found, return error response.
                 return response()->json([
                     'success' => false,
@@ -226,7 +236,7 @@ class WalletsController extends Controller
 
             // Data for debit my wallet.
             $dataDebit = [
-                'owner_id' => $ownerId,
+                'owner_id' => $validated['owner_id'],
                 'amount_transaction' => $validated['amount_transaction'],
             ];
 
@@ -257,9 +267,11 @@ class WalletsController extends Controller
                 'success' => true,
                 'message' => __('Transfer successfully.'),
                 'data' => [
-                    'id' => $debitWalletTransaction['id'],
+                    'id' => $outerWalletTransaction['id'],
+                    'owner' => User::find($validated['user_id'])->name,
+                    'source' => $me->name,
                     'amount_transaction' => $validated['amount_transaction'],
-                    'amount' => $debitWalletTransaction['amount']
+                    'amount' => $outerWalletTransaction['amount']
                 ]
             ], 200);
         } catch (\Exception $e) {

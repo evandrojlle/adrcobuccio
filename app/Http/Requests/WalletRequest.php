@@ -33,10 +33,6 @@ class WalletRequest extends FormRequest
                 ($this->isMethod('put') ? 'required' : 'nullable'),
                 'integer'
             ],
-            'owner_id' => [
-                'required',
-                'integer',
-            ],
             'user_id' => [
                 (($action === 'outerCredit' || $action === 'transfer') ? 'required' : 'nullable'),
                 'integer',

@@ -19,17 +19,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('auth', [AuthController::class, 'auth']);
-
 Route::post('/user/store', [UsersController::class, 'store']);
-Route::prefix('user')->group(function () {
-    Route::put('update', [UsersController::class, 'update']);
-    Route::get('{id}', [UsersController::class, 'get'])->where('id', '[0-9]+');
-    Route::get('filters/{value?}', [UsersController::class, 'filters'])->where('value', '.*');
+Route::middleware('auth:api')->group(function() {
+    Route::prefix('user')->group(function () {
+        Route::put('update', [UsersController::class, 'update']);
+        Route::get('{id}', [UsersController::class, 'get'])->where('id', '[0-9]+');
+        Route::get('filters/{value?}', [UsersController::class, 'filters'])->where('value', '.*');
+    });
+
+    Route::prefix('wallet')->group(function () {
+        Route::post('self', [WalletsController::class, 'selfCredit']);
+        Route::post('outer', [WalletsController::class, 'outerCredit']);
+        Route::post('transfer', [WalletsController::class, 'transfer']);
+    });
 });
 
 
-Route::prefix('wallet')->group(function () {
-    Route::post('self', [WalletsController::class, 'selfCredit']);
-    Route::post('outer', [WalletsController::class, 'outerCredit']);
-    Route::post('transfer', [WalletsController::class, 'transfer']);
-});
+

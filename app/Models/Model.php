@@ -83,6 +83,16 @@ class Model extends EloquentModel
     }
 
     /**
+     * Show generated query.
+     */
+    public function scopeSqlDebug($model)
+    {
+        $query = str_replace(['%', '?'], ['%%', '\'%s\''], $model->toSql());
+        $query = vsprintf($query, $model->getBindings());
+        dd($query);
+    }
+
+    /**
      * Get all registers
      * 
      * @param array $pColumns - Arrays Columns

@@ -1,0 +1,18 @@
+type: environment.insomnia.rest/5.0
+name: Adriano Cobuccio
+meta:
+  id: wrk_5ddb64224acf497f81a17c99f6175cd4
+  created: 1748012663464
+  modified: 1748012663464
+environments:
+  name: Base Environment
+  meta:
+    id: env_524d294e2caed3da3f60694109ce395ab75cc4bb
+    created: 1748012663469
+    modified: 1748012791351
+    isPrivate: false
+  data:
+    base_url: http://127.0.0.1:8000/api
+    accept: application/json
+    content_type: application/json
+    access_token: 6|Uv1LsZc6a5rlksPvTeXwQNI4mbKorPNgYWxStzXDa748926a

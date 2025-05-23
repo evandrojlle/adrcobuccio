@@ -85,13 +85,13 @@ collection:
     meta:
       id: req_c5e38bd8e9fa43e39698491f48610b60
       created: 1747843588671
-      modified: 1747851527030
+      modified: 1747933549213
       isPrivate: false
       sortKey: -1747839446322.5
     method: PUT
     body:
       mimeType: application/json
-      text: |-
+      text: |
         {
         	"user_id":11,
         	"name": "Evandro de Oliveira",
@@ -99,17 +99,17 @@ collection:
         }
     headers:
       - name: Content-Type
-        value: "{{content_type}}"
-        id: pair_d80b0825b3074680bf0bbd114b5d8fbb
+        value: application/json
       - name: Accept
         value: "{{accept}}"
         id: pair_c5e69c4b1bef490da18415a009e1dc2f
       - id: pair_76125ba59faa4598a225de90e017856b
         name: Authorization
         value: "{{access_token}}"
-        disabled: false
+        disabled: true
     authentication:
-      type: none
+      type: bearer
+      token: "{{access_token}}"
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -123,17 +123,25 @@ collection:
     meta:
       id: req_fbbecaff7b3146259d09d6e07d8b86c5
       created: 1747850246861
-      modified: 1747853145628
+      modified: 1747936741093
       isPrivate: false
       sortKey: -1747839446222.5
     method: GET
     headers:
       - name: Content-Type
         value: "{{content_type}}"
+        id: pair_43554580d6be4a37bb026f0d58871ca8
       - name: Accept
         value: "{{accept}}"
+        id: pair_334dbe184afb45598ce6de7c49341774
       - name: Authorization
         value: "{{access_token}}"
+        id: pair_c9ceb684657848b9889bc7197a86f7bb
+        disabled: true
+    authentication:
+      type: bearer
+      token: "{{access_token}}"
+      disabled: false
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -209,11 +217,11 @@ collection:
         store: true
       rebuildPath: true
   - url: "{{base_url}}/wallet/self"
-    name: WALLET SELF DEPOSITE
+    name: WALLET SELF CREDIT
     meta:
       id: req_f1813ab5714f45968a2c79269ee45440
       created: 1747859963082
-      modified: 1747860554101
+      modified: 1747940732099
       isPrivate: false
       sortKey: -1747839446072.5
     method: POST
@@ -221,8 +229,7 @@ collection:
       mimeType: application/json
       text: |-
         {
-        	"owner_id": 11,
-        	"amount": 100.99
+        	"amount_transaction": 1000
         }
     headers:
       - name: Content-Type
@@ -230,6 +237,75 @@ collection:
       - name: Accept
         value: "{{accept}}"
         id: pair_c5e69c4b1bef490da18415a009e1dc2f
+    authentication:
+      type: bearer
+      token: "{{access_token}}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{base_url}}/wallet/other"
+    name: WALLET OUTHERS USERS CREDIT
+    meta:
+      id: req_49c6913dfc5f47feb434a7ef56f95f10
+      created: 1747922611200
+      modified: 1747944080410
+      isPrivate: false
+      sortKey: -1747839446022.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"user_id": 5,
+        	"amount_transaction": 11.80
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: "{{accept}}"
+        id: pair_c5e69c4b1bef490da18415a009e1dc2f
+    authentication:
+      type: bearer
+      token: "{{access_token}}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{base_url}}/wallet/transfer"
+    name: WALLET TRANSFER
+    meta:
+      id: req_9dce3a0ad1ba4da0ad2ab7e1d92872ee
+      created: 1747929472197
+      modified: 1747944014643
+      isPrivate: false
+      sortKey: -1747839445972.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"user_id": 7,
+        	"amount_transaction": 1.90
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: "{{accept}}"
+        id: pair_c5e69c4b1bef490da18415a009e1dc2f
+    authentication:
+      type: bearer
+      token: "{{access_token}}"
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -243,7 +319,7 @@ cookieJar:
   meta:
     id: jar_d18c2685c54e7ab2562575fecf31fa050d9fa0c3
     created: 1747836481202
-    modified: 1747844154465
+    modified: 1747933029891
   cookies:
     - id: 023787ab-16f7-4fb6-bfd0-362dcd824705
       key: XSRF-TOKEN
@@ -270,7 +346,7 @@ environments:
   meta:
     id: env_d18c2685c54e7ab2562575fecf31fa050d9fa0c3
     created: 1747836481196
-    modified: 1747844154478
+    modified: 1747933029907
     isPrivate: false
   data:
     base_url: http://127.0.0.1:8000/api
@@ -279,11 +355,11 @@ environments:
       meta:
         id: env_f01c39b881c24888ba2e0a43d5e8526a
         created: 1747840515167
-        modified: 1747844154471
+        modified: 1747933029898
         isPrivate: true
         sortKey: 1747840515167
       data:
         base_url: http://127.0.0.1:8000/api
         accept: application/json
         content_type: application/json
-        access_token: 5|SNZVYSTn9DuBlkjWp5L8G32iP1JptEdQFrNz9koK02a23492
+        access_token: 6|Uv1LsZc6a5rlksPvTeXwQNI4mbKorPNgYWxStzXDa748926a

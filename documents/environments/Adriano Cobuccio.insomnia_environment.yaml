@@ -9,7 +9,7 @@ environments:
   meta:
     id: env_524d294e2caed3da3f60694109ce395ab75cc4bb
     created: 1748012663469
-    modified: 1748012791351
+    modified: 1748013863023
     isPrivate: false
   data:
     base_url: http://127.0.0.1:8000/api

@@ -1,0 +1,417 @@
+{
+	"info": {
+		"_postman_id": "59002314-a7f8-4677-956f-7fd9e55918ec",
+		"name": "Adriano Cobuccio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "484154"
+	},
+	"item": [
+		{
+			"name": "AUTH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"try {\r",
+							"    responseJSON = JSON.parse(pm.response.text());\r",
+							"\r",
+							"    pm.environment.set(\"access_token\", responseJSON.authorization.access_token);\r",
+							"} catch (e) {\r",
+							"\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"evandrojlle@gmail.com\",\r\n    \"password\": \"Abc@123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER REGISTER",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"name\": \"Pedro Bó\",\r\n\t\"email\": \"pedrobo@gmail.com\",\r\n\t\"password\": \"Abc@123456\",\r\n\t\"password_confirmation\": \"Abc@123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/user/store",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user",
+						"store"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER EDIT",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"user_id\":1,\r\n\t\"name\": \"Evandro de Oliveira\",\r\n\t\"email\": \"evandrojlle@gmail.com\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/user/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER BY ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/user/11",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USERS BY FILTERS WITHOUT FILTER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/user/filters",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user",
+						"filters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USERS BY FILTERS WITH FILTER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/user/filters/name=Evandro",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user",
+						"filters",
+						"name=Evandro"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "WALLET SELF CREDIT",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"amount_transaction\": 1000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/wallet/self",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"wallet",
+						"self"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "WALLET OUTHERS USERS CREDIT",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"user_id\": 5,\r\n\t\"amount_transaction\": 11.80\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/wallet/other",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"wallet",
+						"other"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "WALLET TRANSFER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "{{content_type}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"user_id\": 7,\r\n\t\"amount_transaction\": 1.90\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/wallet/transfer",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"wallet",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

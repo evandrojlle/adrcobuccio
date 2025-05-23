@@ -53,7 +53,7 @@ collection:
     meta:
       id: req_17f5d487ed0f4182b55ec68547757a3f
       created: 1747842411282
-      modified: 1747849293899
+      modified: 1748014267629
       isPrivate: false
       sortKey: -1747842411282
     method: POST
@@ -150,12 +150,12 @@ collection:
         send: true
         store: true
       rebuildPath: true
-  - url: "{{base_url}}/user/filters"
-    name: USERS BY FILTERS
+  - url: "{{base_url}}/user/filters/name=Evandro"
+    name: USERS BY FILTERS WITHOUT FILTER
     meta:
       id: req_8e27a5fe0a104bb387a2607d030c8766
       created: 1747851232349
-      modified: 1747853255894
+      modified: 1748018515557
       isPrivate: false
       description: >-
         ```
@@ -206,8 +206,9 @@ collection:
         value: "{{content_type}}"
       - name: Accept
         value: "{{accept}}"
-      - name: Authorization
-        value: "{{access_token}}"
+    authentication:
+      type: bearer
+      token: "{{access_token}}"
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -314,12 +315,79 @@ collection:
         send: true
         store: true
       rebuildPath: true
+  - url: "{{base_url}}/user/filters/name=Evandro"
+    name: USERS BY FILTERS WITH FILTER
+    meta:
+      id: req_edcc29892dab4da6be27f4bf94560121
+      created: 1748018494859
+      modified: 1748018494859
+      isPrivate: false
+      description: >-
+        ```
+
+        /user/filters/{value?}
+
+        ```
+
+        onde o parâmetro **value** é opcional;
+
+        Exemplo:
+
+        ```
+
+        /user/filters
+
+        ```
+
+
+        **value** deve ser enviado no formato campo=valor.
+
+        Exemplo:
+
+        ```
+
+        /user/filters/name=Mir
+
+        ```
+
+
+        no caso da necessidade de envio de mais de um campo para o filtro,
+        separar pelo caractere &
+
+        Exemplo:
+
+        ```
+
+        /user/filters/name=Mir&email=gmail
+
+        ```
+
+
+        Se a busca for por nome ou email, o filtro será por LIKE
+      sortKey: -1747839446122.5
+    method: GET
+    headers:
+      - name: Content-Type
+        value: "{{content_type}}"
+      - name: Accept
+        value: "{{accept}}"
+    authentication:
+      type: bearer
+      token: "{{access_token}}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
     id: jar_d18c2685c54e7ab2562575fecf31fa050d9fa0c3
     created: 1747836481202
-    modified: 1747933029891
+    modified: 1748018096438
   cookies:
     - id: 023787ab-16f7-4fb6-bfd0-362dcd824705
       key: XSRF-TOKEN
@@ -346,7 +414,7 @@ environments:
   meta:
     id: env_d18c2685c54e7ab2562575fecf31fa050d9fa0c3
     created: 1747836481196
-    modified: 1747933029907
+    modified: 1748018096457
     isPrivate: false
   data:
     base_url: http://127.0.0.1:8000/api
@@ -355,11 +423,11 @@ environments:
       meta:
         id: env_f01c39b881c24888ba2e0a43d5e8526a
         created: 1747840515167
-        modified: 1747933029898
+        modified: 1748018096445
         isPrivate: true
         sortKey: 1747840515167
       data:
         base_url: http://127.0.0.1:8000/api
         accept: application/json
         content_type: application/json
-        access_token: 6|Uv1LsZc6a5rlksPvTeXwQNI4mbKorPNgYWxStzXDa748926a
+        access_token: 8|kSjFaJMlnCHOGE126CF403qRzeUYD3BS3JAygxcK9eeffcbb

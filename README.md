@@ -128,7 +128,8 @@ php artisa serve
 ```
 
 ### Postman / Insomnia
-- Foram adicionadas as colections do Postman e do Insomnia no diretório `documents/` do projeto.
+- Foram adicionadas as colections do Postman e do Insomnia no diretório `documents/collections` do projeto.
+- Foram adicionados os environments do Postman e do Insomnia no diretório `documents/environments` do projeto.
 
 ### Rotas.
 As rotas são configuradas no arquivo routes/api.php e podem ser executadas através do POSTMAN ou INSOMNIA, da seguinte forma:
